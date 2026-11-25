@@ -5,7 +5,7 @@ An end-to-end analytics project that combines **527,597 police.uk records** with
 - **Neighbourhood Safety Index (NSI):** a baseline, severity-weighted safety score for every LSOA.
 - **Family Suitability Index (FSI):** a buyer-adjustable score combining safety, affordability against a budget, schools, family community and environment.
 
-Write-up: [`article/Medium_Article_SY_Crime_Property_Intelligence.md`](article/Medium_Article_SY_Crime_Property_Intelligence.md)
+Write-up: [`Medium_Article_SY_Crime_Property_Intelligence`](https://medium.com/@aaadebawojo/is-it-safe-and-can-we-afford-it-562a0b202af3)
 
 ![Family Finder](images/dashboard/06_family_finder.png)
 
