@@ -1,0 +1,193 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "description": "P2 Monthly crimes (excl. ASB) with 3- and 12-month rolling averages. Click a month to focus the KPI cards. Field-well names (rename for this visual): Month, Crimes, Rolling 3, Rolling 12",
+  "data": {
+    "name": "dataset"
+  },
+  "width": "container",
+  "height": "container",
+  "autosize": {
+    "type": "fit",
+    "contains": "padding"
+  },
+  "transform": [
+    {
+      "calculate": "toDate(datum['Month'])",
+      "as": "MonthDate"
+    },
+    {
+      "joinaggregate": [
+        {
+          "op": "max",
+          "field": "MonthDate",
+          "as": "LastMonth"
+        }
+      ]
+    },
+    {
+      "calculate": "datum['MonthDate'] === datum['LastMonth']",
+      "as": "IsLast"
+    }
+  ],
+  "encoding": {
+    "x": {
+      "field": "MonthDate",
+      "type": "temporal",
+      "axis": {
+        "title": null,
+        "format": "%b %y",
+        "tickCount": 12,
+        "labelColor": "#536579",
+        "labelFontSize": 9,
+        "grid": false,
+        "domainColor": "#D9E0E8",
+        "tickColor": "#D9E0E8"
+      }
+    }
+  },
+  "layer": [
+    {
+      "mark": {
+        "type": "line",
+        "color": "#A9B4C2",
+        "strokeWidth": 1.5,
+        "interpolate": "monotone"
+      },
+      "encoding": {
+        "y": {
+          "field": "Crimes",
+          "type": "quantitative",
+          "scale": {
+            "zero": false
+          },
+          "axis": {
+            "title": null,
+            "format": ",.0f",
+            "tickCount": 4,
+            "labelColor": "#536579",
+            "labelFontSize": 9,
+            "gridColor": "#E3E8EF",
+            "domain": false,
+            "ticks": false
+          }
+        }
+      }
+    },
+    {
+      "mark": {
+        "type": "line",
+        "color": "#168A86",
+        "strokeWidth": 2,
+        "interpolate": "monotone"
+      },
+      "encoding": {
+        "y": {
+          "field": "Rolling 3",
+          "type": "quantitative"
+        }
+      }
+    },
+    {
+      "mark": {
+        "type": "line",
+        "color": "#14263D",
+        "strokeWidth": 3,
+        "interpolate": "monotone"
+      },
+      "encoding": {
+        "y": {
+          "field": "Rolling 12",
+          "type": "quantitative"
+        }
+      }
+    },
+    {
+      "mark": {
+        "type": "circle",
+        "size": 55,
+        "stroke": "#FFFFFF",
+        "strokeWidth": 1,
+        "cursor": "pointer"
+      },
+      "encoding": {
+        "y": {
+          "field": "Crimes",
+          "type": "quantitative"
+        },
+        "color": {
+          "condition": {
+            "test": "datum['IsLast']",
+            "value": "#168A86"
+          },
+          "value": "#A9B4C2"
+        },
+        "opacity": {
+          "condition": {
+            "test": {
+              "field": "__selected__",
+              "equal": "off"
+            },
+            "value": 0.25
+          },
+          "value": 1
+        },
+        "tooltip": [
+          {
+            "field": "MonthDate",
+            "type": "temporal",
+            "title": "Month",
+            "format": "%B %Y"
+          },
+          {
+            "field": "Crimes",
+            "title": "Crimes (excl. ASB)",
+            "format": ","
+          },
+          {
+            "field": "Rolling 3",
+            "title": "3-month average",
+            "format": ",.0f"
+          },
+          {
+            "field": "Rolling 12",
+            "title": "12-month average",
+            "format": ",.0f"
+          }
+        ]
+      }
+    },
+    {
+      "transform": [
+        {
+          "filter": "datum['IsLast']"
+        }
+      ],
+      "mark": {
+        "type": "text",
+        "align": "right",
+        "dx": -8,
+        "dy": 16,
+        "fontSize": 10,
+        "font": "Segoe UI Semibold",
+        "color": "#14263D"
+      },
+      "encoding": {
+        "y": {
+          "field": "Crimes",
+          "type": "quantitative"
+        },
+        "text": {
+          "field": "Crimes",
+          "type": "quantitative",
+          "format": ","
+        }
+      }
+    }
+  ],
+  "config": {
+    "view": {
+      "stroke": null
+    },
+    "font": "Segoe UI"
+  }
+}

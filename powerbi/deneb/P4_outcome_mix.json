@@ -1,0 +1,174 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "description": "P4 What happened to each crime, by crime group (latest status, mature crime months only). Click a group to filter the page. Field-well names (rename for this visual): Group, Positive Rate, Charged, Out of court, Other closed, Not prosecuted, No suspect, Unknown",
+  "data": {
+    "name": "dataset"
+  },
+  "width": "container",
+  "height": "container",
+  "autosize": {
+    "type": "fit",
+    "contains": "padding"
+  },
+  "transform": [
+    {
+      "filter": "isValid(datum['Positive Rate'])"
+    },
+    {
+      "calculate": "datum['Group'] + '  ' + format(datum['Positive Rate'], '.1%')",
+      "as": "Label"
+    },
+    {
+      "fold": [
+        "Charged",
+        "Out of court",
+        "Other closed",
+        "Not prosecuted",
+        "No suspect",
+        "Unknown"
+      ],
+      "as": [
+        "Outcome",
+        "Share"
+      ]
+    },
+    {
+      "calculate": "indexof(['Charged','Out of court','Other closed','Not prosecuted','No suspect','Unknown'], datum['Outcome'])",
+      "as": "Order"
+    },
+    {
+      "calculate": "datum['Outcome'] === 'Not prosecuted' ? 'Suspect identified, not prosecuted' : datum['Outcome'] === 'No suspect' ? 'No suspect identified' : datum['Outcome'] === 'Charged' ? 'Charged / summonsed' : datum['Outcome'] === 'Out of court' ? 'Out-of-court resolution' : datum['Outcome'] === 'Other closed' ? 'Not in public interest / transferred' : 'Status unknown'",
+      "as": "Outcome Name"
+    }
+  ],
+  "mark": {
+    "type": "bar",
+    "height": 26,
+    "cursor": "pointer",
+    "stroke": "#FFFFFF",
+    "strokeWidth": 0.5
+  },
+  "encoding": {
+    "y": {
+      "field": "Label",
+      "type": "nominal",
+      "sort": {
+        "field": "Positive Rate",
+        "order": "descending"
+      },
+      "axis": {
+        "title": null,
+        "labelColor": "#14263D",
+        "labelFontSize": 9.5,
+        "labelLimit": 220,
+        "domain": false,
+        "ticks": false,
+        "labelPadding": 8
+      }
+    },
+    "x": {
+      "field": "Share",
+      "type": "quantitative",
+      "stack": "zero",
+      "scale": {
+        "domain": [
+          0,
+          1
+        ],
+        "nice": false
+      },
+      "axis": {
+        "title": null,
+        "format": ".0%",
+        "values": [
+          0,
+          0.25,
+          0.5,
+          0.75,
+          1
+        ],
+        "labelColor": "#536579",
+        "labelFontSize": 8.5,
+        "gridColor": "#E3E8EF",
+        "domain": false,
+        "ticks": false,
+        "orient": "top"
+      }
+    },
+    "order": {
+      "field": "Order",
+      "type": "quantitative"
+    },
+    "color": {
+      "field": "Outcome Name",
+      "type": "nominal",
+      "scale": {
+        "domain": [
+          "Charged / summonsed",
+          "Out-of-court resolution",
+          "Not in public interest / transferred",
+          "Suspect identified, not prosecuted",
+          "No suspect identified",
+          "Status unknown"
+        ],
+        "range": [
+          "#168A86",
+          "#7DB8A6",
+          "#2E4A6B",
+          "#536579",
+          "#A9B4C2",
+          "#E4E9F0"
+        ]
+      },
+      "legend": {
+        "orient": "bottom",
+        "direction": "horizontal",
+        "columns": 3,
+        "title": null,
+        "labelColor": "#14263D",
+        "labelFontSize": 8.5,
+        "symbolType": "square",
+        "symbolSize": 90,
+        "labelLimit": 220,
+        "columnPadding": 12,
+        "rowPadding": 4
+      }
+    },
+    "opacity": {
+      "condition": {
+        "test": {
+          "field": "__selected__",
+          "equal": "off"
+        },
+        "value": 0.25
+      },
+      "value": 1
+    },
+    "tooltip": [
+      {
+        "field": "Group",
+        "title": "Crime group"
+      },
+      {
+        "field": "Outcome Name",
+        "title": "Outcome"
+      },
+      {
+        "field": "Share",
+        "title": "Share of crimes",
+        "format": ".1%"
+      },
+      {
+        "field": "Positive Rate",
+        "title": "Positive outcome rate (group)",
+        "format": ".1%"
+      }
+    ]
+  },
+  "config": {
+    "view": {
+      "stroke": null
+    },
+    "font": "Segoe UI"
+  }
+}

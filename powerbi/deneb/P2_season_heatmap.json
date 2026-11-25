@@ -1,0 +1,47 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "description": "P2 Crimes (excl. ASB) by month and year. Click a cell to focus the KPI cards on that month. Field-well names (rename for this visual): Year, Month No, Month, Crimes",
+  "data": { "name": "dataset" },
+  "width": "container",
+  "height": "container",
+  "autosize": { "type": "fit", "contains": "padding" },
+  "transform": [
+    { "calculate": "datum['Crimes'] >= 1000 ? format(datum['Crimes'] / 1000, '.1f') + 'k' : format(datum['Crimes'], ',')", "as": "Label" }
+  ],
+  "encoding": {
+    "x": {
+      "field": "Month", "type": "ordinal",
+      "sort": { "field": "Month No", "order": "ascending" },
+      "scale": { "domain": ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"], "paddingInner": 0.06 },
+      "axis": { "title": null, "orient": "top", "labelColor": "#536579", "labelFontSize": 9, "domain": false, "ticks": false, "labelAngle": 0 }
+    },
+    "y": {
+      "field": "Year", "type": "ordinal",
+      "scale": { "paddingInner": 0.08 },
+      "axis": { "title": null, "labelColor": "#14263D", "labelFontSize": 10, "labelFont": "Segoe UI Semibold", "domain": false, "ticks": false, "labelPadding": 8 }
+    }
+  },
+  "layer": [
+    {
+      "mark": { "type": "rect", "cornerRadius": 3, "cursor": "pointer" },
+      "encoding": {
+        "color": {
+          "field": "Crimes", "type": "quantitative",
+          "scale": { "range": ["#CFE6E4", "#F3D9A8", "#E9A49E"], "zero": false },
+          "legend": null
+        },
+        "opacity": { "condition": { "test": { "field": "__selected__", "equal": "off" }, "value": 0.3 }, "value": 1 },
+        "tooltip": [
+          { "field": "Month", "title": "Month" },
+          { "field": "Year", "title": "Year" },
+          { "field": "Crimes", "title": "Crimes (excl. ASB)", "format": "," }
+        ]
+      }
+    },
+    {
+      "mark": { "type": "text", "fontSize": 9, "font": "Segoe UI Semibold", "color": "#14263D" },
+      "encoding": { "text": { "field": "Label" } }
+    }
+  ],
+  "config": { "view": { "stroke": null }, "font": "Segoe UI" }
+}

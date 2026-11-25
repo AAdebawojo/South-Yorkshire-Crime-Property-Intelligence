@@ -1,0 +1,195 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "description": "P1 Monthly crimes (excl. ASB) with 12-month rolling average. Field-well names (rename for this visual): Month, Crimes, Rolling 12",
+  "data": {
+    "name": "dataset"
+  },
+  "width": "container",
+  "height": "container",
+  "transform": [
+    {
+      "calculate": "toDate(datum['Month'])",
+      "as": "MonthDate"
+    },
+    {
+      "joinaggregate": [
+        {
+          "op": "max",
+          "field": "MonthDate",
+          "as": "LastMonth"
+        }
+      ]
+    },
+    {
+      "calculate": "datum['MonthDate'] === datum['LastMonth']",
+      "as": "IsLast"
+    }
+  ],
+  "encoding": {
+    "x": {
+      "field": "MonthDate",
+      "type": "temporal",
+      "axis": {
+        "title": null,
+        "format": "%b %y",
+        "tickCount": 12,
+        "labelColor": "#536579",
+        "labelFontSize": 9,
+        "grid": false,
+        "domainColor": "#D9E0E8",
+        "tickColor": "#D9E0E8"
+      }
+    }
+  },
+  "layer": [
+    {
+      "mark": {
+        "type": "line",
+        "color": "#A9B4C2",
+        "strokeWidth": 1.5,
+        "interpolate": "monotone",
+        "point": {
+          "filled": true,
+          "size": 14,
+          "color": "#A9B4C2"
+        }
+      },
+      "encoding": {
+        "y": {
+          "field": "Crimes",
+          "type": "quantitative",
+          "scale": {
+            "zero": false
+          },
+          "axis": {
+            "title": null,
+            "format": ",.0f",
+            "tickCount": 3,
+            "labelColor": "#536579",
+            "labelFontSize": 9,
+            "gridColor": "#E3E8EF",
+            "domain": false,
+            "ticks": false
+          }
+        }
+      }
+    },
+    {
+      "mark": {
+        "type": "line",
+        "color": "#14263D",
+        "strokeWidth": 2.5,
+        "interpolate": "monotone"
+      },
+      "encoding": {
+        "y": {
+          "field": "Rolling 12",
+          "type": "quantitative"
+        }
+      }
+    },
+    {
+      "transform": [
+        {
+          "filter": "datum['IsLast']"
+        }
+      ],
+      "mark": {
+        "type": "circle",
+        "size": 60,
+        "color": "#168A86",
+        "stroke": "#FFFFFF",
+        "strokeWidth": 1.5
+      },
+      "encoding": {
+        "y": {
+          "field": "Crimes",
+          "type": "quantitative"
+        }
+      }
+    },
+    {
+      "transform": [
+        {
+          "filter": "datum['IsLast']"
+        }
+      ],
+      "mark": {
+        "type": "text",
+        "align": "right",
+        "dx": -8,
+        "dy": -10,
+        "fontSize": 10,
+        "font": "Segoe UI Semibold",
+        "color": "#14263D"
+      },
+      "encoding": {
+        "y": {
+          "field": "Crimes",
+          "type": "quantitative"
+        },
+        "text": {
+          "field": "Crimes",
+          "type": "quantitative",
+          "format": ","
+        }
+      }
+    },
+    {
+      "mark": {
+        "type": "rule",
+        "color": "#14263D",
+        "strokeWidth": 0.5,
+        "opacity": 0
+      },
+      "params": [
+        {
+          "name": "hover",
+          "select": {
+            "type": "point",
+            "fields": [
+              "MonthDate"
+            ],
+            "nearest": true,
+            "on": "pointerover",
+            "clear": "pointerout"
+          }
+        }
+      ],
+      "encoding": {
+        "opacity": {
+          "condition": {
+            "param": "hover",
+            "empty": false,
+            "value": 0.6
+          },
+          "value": 0
+        },
+        "tooltip": [
+          {
+            "field": "MonthDate",
+            "type": "temporal",
+            "title": "Month",
+            "format": "%B %Y"
+          },
+          {
+            "field": "Crimes",
+            "title": "Crimes (excl. ASB)",
+            "format": ","
+          },
+          {
+            "field": "Rolling 12",
+            "title": "12-month average",
+            "format": ",.0f"
+          }
+        ]
+      }
+    }
+  ],
+  "config": {
+    "view": {
+      "stroke": null
+    },
+    "font": "Segoe UI"
+  }
+}

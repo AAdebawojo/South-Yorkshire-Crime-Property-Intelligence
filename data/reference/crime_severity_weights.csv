@@ -1,0 +1,14 @@
+category,ons_weight,sy_offences,pct_offences,pct_severity
+Robbery,993.55,5715,1.4,7.09
+Burglary,475.82,24897,6.12,14.79
+Violence and sexual offences,301.19,162135,39.84,60.97
+Drugs,294.98,14775,3.63,5.44
+Possession of weapons,141.0,5713,1.4,1.01
+Other crime,100.98,14483,3.56,1.83
+Theft from the person,87.01,2873,0.71,0.31
+Other theft,79.93,26554,6.53,2.65
+Vehicle crime,73.08,30489,7.49,2.78
+Criminal damage and arson,32.66,40226,9.89,1.64
+Bicycle theft,18.55,2242,0.55,0.05
+Public order,17.23,36001,8.85,0.77
+Shoplifting,13.09,40826,10.03,0.67

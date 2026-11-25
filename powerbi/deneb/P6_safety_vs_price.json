@@ -1,0 +1,280 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "description": "P6 Safety vs family house price, one dot per LSOA, coloured by family suitability class for the current budget and weights. Dashed line = Safety Index expected for the price; dots well above it are good value. Vertical line = budget. Click a dot to filter the page. Field-well names (rename for this visual): Code, LSOA, District, Price, NSI, Expected, FSI, Class, Budget",
+  "data": {
+    "name": "dataset"
+  },
+  "width": "container",
+  "height": "container",
+  "autosize": {
+    "type": "fit",
+    "contains": "padding"
+  },
+  "transform": [
+    {
+      "filter": "isValid(datum['Price']) && datum['Price'] > 0 && isValid(datum['NSI'])"
+    },
+    {
+      "calculate": "indexof([\"Excellent\", \"Strong\", \"Good\", \"Partial\", \"Weak\", \"Not eligible\"], datum['Class'])",
+      "as": "ClassOrder"
+    },
+    {
+      "calculate": "datum['Class'] === 'Not eligible' ? 0 : 1",
+      "as": "Eligible"
+    },
+    {
+      "calculate": "'\u00a3' + format(datum['Price'], ',.0f')",
+      "as": "Price Label"
+    }
+  ],
+  "encoding": {
+    "x": {
+      "field": "Price",
+      "type": "quantitative",
+      "scale": {
+        "type": "log",
+        "domain": [
+          60000,
+          700000
+        ],
+        "clamp": true,
+        "nice": false
+      },
+      "axis": {
+        "title": "Typical family house price (log scale)",
+        "titleColor": "#536579",
+        "titleFontSize": 8.5,
+        "titleFontWeight": "normal",
+        "values": [
+          75000,
+          100000,
+          150000,
+          200000,
+          300000,
+          500000
+        ],
+        "labelExpr": "'\u00a3' + format(datum.value/1000, ',.0f') + 'k'",
+        "labelColor": "#536579",
+        "labelFontSize": 8.5,
+        "gridColor": "#E3E8EF",
+        "domain": false,
+        "ticks": false
+      }
+    },
+    "y": {
+      "field": "NSI",
+      "type": "quantitative",
+      "scale": {
+        "domain": [
+          0,
+          100
+        ],
+        "nice": false
+      },
+      "axis": {
+        "title": "Safety Index (baseline)",
+        "titleColor": "#536579",
+        "titleFontSize": 8.5,
+        "titleFontWeight": "normal",
+        "values": [
+          0,
+          20,
+          40,
+          60,
+          80,
+          100
+        ],
+        "labelColor": "#536579",
+        "labelFontSize": 8.5,
+        "gridColor": "#E3E8EF",
+        "domain": false,
+        "ticks": false
+      }
+    }
+  },
+  "layer": [
+    {
+      "mark": {
+        "type": "line",
+        "color": "#536579",
+        "strokeDash": [
+          4,
+          3
+        ],
+        "strokeWidth": 1.5,
+        "clip": true
+      },
+      "encoding": {
+        "y": {
+          "field": "Expected",
+          "type": "quantitative"
+        },
+        "order": {
+          "field": "Price",
+          "type": "quantitative"
+        }
+      }
+    },
+    {
+      "mark": {
+        "type": "circle",
+        "cursor": "pointer",
+        "stroke": "#FFFFFF",
+        "strokeWidth": 0.4,
+        "clip": true
+      },
+      "encoding": {
+        "color": {
+          "field": "Class",
+          "type": "nominal",
+          "scale": {
+            "domain": [
+              "Excellent",
+              "Strong",
+              "Good",
+              "Partial",
+              "Weak",
+              "Not eligible"
+            ],
+            "range": [
+              "#168A86",
+              "#7DB8A6",
+              "#A9B4C2",
+              "#E4A33B",
+              "#D56B63",
+              "#C9D1DB"
+            ]
+          },
+          "legend": {
+            "orient": "bottom",
+            "direction": "horizontal",
+            "title": null,
+            "labelColor": "#14263D",
+            "labelFontSize": 8.5,
+            "symbolType": "circle",
+            "symbolSize": 60,
+            "columnPadding": 8
+          }
+        },
+        "size": {
+          "condition": {
+            "test": "datum['Eligible'] === 1",
+            "value": 34
+          },
+          "value": 14
+        },
+        "order": {
+          "field": "ClassOrder",
+          "sort": "descending"
+        },
+        "opacity": {
+          "condition": {
+            "test": {
+              "field": "__selected__",
+              "equal": "off"
+            },
+            "value": 0.12
+          },
+          "value": 0.95
+        },
+        "tooltip": [
+          {
+            "field": "LSOA",
+            "title": "LSOA"
+          },
+          {
+            "field": "District",
+            "title": "District"
+          },
+          {
+            "field": "Class",
+            "title": "Family fit"
+          },
+          {
+            "field": "FSI",
+            "title": "Family Suitability Index",
+            "format": ".1f"
+          },
+          {
+            "field": "Price Label",
+            "title": "Typical family house price"
+          },
+          {
+            "field": "NSI",
+            "title": "Safety Index",
+            "format": ".1f"
+          },
+          {
+            "field": "Expected",
+            "title": "Safety expected for this price",
+            "format": ".1f"
+          }
+        ]
+      }
+    },
+    {
+      "transform": [
+        {
+          "aggregate": [
+            {
+              "op": "max",
+              "field": "Budget",
+              "as": "B"
+            }
+          ]
+        }
+      ],
+      "layer": [
+        {
+          "mark": {
+            "type": "rule",
+            "color": "#14263D",
+            "strokeWidth": 1.5
+          },
+          "encoding": {
+            "x": {
+              "field": "B",
+              "type": "quantitative"
+            },
+            "y": {
+              "value": 0
+            },
+            "y2": {
+              "value": "height"
+            }
+          }
+        },
+        {
+          "mark": {
+            "type": "text",
+            "align": "right",
+            "baseline": "top",
+            "dx": -4,
+            "dy": 4,
+            "fontSize": 8.5,
+            "color": "#14263D",
+            "fontWeight": "bold"
+          },
+          "encoding": {
+            "x": {
+              "field": "B",
+              "type": "quantitative"
+            },
+            "y": {
+              "value": 0
+            },
+            "text": {
+              "value": "your budget"
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "config": {
+    "view": {
+      "stroke": null
+    },
+    "font": "Segoe UI"
+  }
+}

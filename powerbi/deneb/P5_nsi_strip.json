@@ -1,0 +1,248 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "description": "P5 Baseline Safety Index of every LSOA by district (one dot per LSOA). Hollow dots = low confidence. Navy tick = district median. Click a dot to filter the page. Field-well names (rename for this visual): Code, LSOA, District, NSI, Band, Rank, Confidence",
+  "data": {
+    "name": "dataset"
+  },
+  "width": "container",
+  "height": "container",
+  "autosize": {
+    "type": "fit",
+    "contains": "padding"
+  },
+  "transform": [
+    {
+      "filter": "isValid(datum['NSI'])"
+    },
+    {
+      "calculate": "((datum['Rank'] * 7919) % 97) / 97 - 0.5",
+      "as": "Jitter"
+    },
+    {
+      "joinaggregate": [
+        {
+          "op": "median",
+          "field": "NSI",
+          "as": "Median"
+        }
+      ],
+      "groupby": [
+        "District"
+      ]
+    }
+  ],
+  "encoding": {
+    "y": {
+      "field": "District",
+      "type": "nominal",
+      "sort": {
+        "field": "Median",
+        "op": "max",
+        "order": "descending"
+      },
+      "axis": {
+        "title": null,
+        "labelColor": "#14263D",
+        "labelFontSize": 9.5,
+        "domain": false,
+        "ticks": false,
+        "labelPadding": 6
+      },
+      "scale": {
+        "paddingInner": 0.15
+      }
+    },
+    "x": {
+      "field": "NSI",
+      "type": "quantitative",
+      "scale": {
+        "domain": [
+          0,
+          100
+        ],
+        "nice": false
+      },
+      "axis": {
+        "title": null,
+        "values": [
+          0,
+          20,
+          40,
+          60,
+          80,
+          100
+        ],
+        "labelColor": "#536579",
+        "labelFontSize": 8.5,
+        "gridColor": "#E3E8EF",
+        "gridDash": [
+          2,
+          2
+        ],
+        "domain": false,
+        "ticks": false
+      }
+    }
+  },
+  "layer": [
+    {
+      "mark": {
+        "type": "circle",
+        "size": 22,
+        "strokeWidth": 1,
+        "cursor": "pointer"
+      },
+      "encoding": {
+        "yOffset": {
+          "field": "Jitter",
+          "type": "quantitative",
+          "scale": {
+            "domain": [
+              -0.6,
+              0.6
+            ]
+          }
+        },
+        "color": {
+          "field": "Band",
+          "type": "nominal",
+          "scale": {
+            "domain": [
+              "Very high safety",
+              "High safety",
+              "Moderate safety",
+              "Low safety",
+              "Very low safety"
+            ],
+            "range": [
+              "#168A86",
+              "#7DB8A6",
+              "#E4A33B",
+              "#E08A6F",
+              "#D56B63"
+            ]
+          },
+          "legend": null
+        },
+        "fillOpacity": {
+          "condition": {
+            "test": "datum['Confidence'] === 'Low'",
+            "value": 0
+          },
+          "value": 0.85
+        },
+        "strokeOpacity": {
+          "condition": {
+            "test": {
+              "field": "__selected__",
+              "equal": "off"
+            },
+            "value": 0.15
+          },
+          "value": 1
+        },
+        "opacity": {
+          "condition": {
+            "test": {
+              "field": "__selected__",
+              "equal": "off"
+            },
+            "value": 0.2
+          },
+          "value": 1
+        },
+        "tooltip": [
+          {
+            "field": "LSOA",
+            "title": "LSOA"
+          },
+          {
+            "field": "District",
+            "title": "District"
+          },
+          {
+            "field": "NSI",
+            "title": "Safety Index (baseline)",
+            "format": ".1f"
+          },
+          {
+            "field": "Band",
+            "title": "Band"
+          },
+          {
+            "field": "Rank",
+            "title": "Rank (1 = safest of 860)"
+          },
+          {
+            "field": "Confidence",
+            "title": "Confidence"
+          }
+        ],
+        "stroke": {
+          "field": "Band",
+          "type": "nominal",
+          "scale": {
+            "domain": [
+              "Very high safety",
+              "High safety",
+              "Moderate safety",
+              "Low safety",
+              "Very low safety"
+            ],
+            "range": [
+              "#168A86",
+              "#7DB8A6",
+              "#E4A33B",
+              "#E08A6F",
+              "#D56B63"
+            ]
+          },
+          "legend": null
+        }
+      }
+    },
+    {
+      "mark": {
+        "type": "tick",
+        "color": "#14263D",
+        "thickness": 2.5,
+        "size": 30
+      },
+      "encoding": {
+        "x": {
+          "field": "Median",
+          "type": "quantitative"
+        },
+        "tooltip": [
+          {
+            "field": "District",
+            "title": "District"
+          },
+          {
+            "field": "Median",
+            "title": "Median LSOA Safety Index",
+            "format": ".1f"
+          }
+        ]
+      },
+      "transform": [
+        {
+          "aggregate": [],
+          "groupby": [
+            "District",
+            "Median"
+          ]
+        }
+      ]
+    }
+  ],
+  "config": {
+    "view": {
+      "stroke": null
+    },
+    "font": "Segoe UI",
+    "circle": {
+      "filled": true
+    }
+  }
+}

@@ -1,0 +1,203 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "description": "P4 Outcome status by the month the crime happened. Shaded months are too recent to count in the KPIs (6-month maturity rule). Field-well names (rename for this visual): Month, Concluded, Positive, Open, Mature",
+  "data": {
+    "name": "dataset"
+  },
+  "width": "container",
+  "height": "container",
+  "autosize": {
+    "type": "fit",
+    "contains": "padding"
+  },
+  "transform": [
+    {
+      "filter": "isValid(datum['Concluded'])"
+    },
+    {
+      "calculate": "time(toDate(datum['Month']))",
+      "as": "MonthDate"
+    },
+    {
+      "calculate": "datum['MonthDate'] + 15*86400000",
+      "as": "MidMonth"
+    }
+  ],
+  "layer": [
+    {
+      "transform": [
+        {
+          "filter": "datum['Mature'] == 0"
+        },
+        {
+          "aggregate": [
+            {
+              "op": "min",
+              "field": "MonthDate",
+              "as": "Start"
+            },
+            {
+              "op": "max",
+              "field": "MonthDate",
+              "as": "End"
+            }
+          ]
+        },
+        {
+          "calculate": "datum['End'] + 31*86400000",
+          "as": "EndPlus"
+        }
+      ],
+      "layer": [
+        {
+          "mark": {
+            "type": "rect",
+            "color": "#E4A33B",
+            "opacity": 0.12
+          },
+          "encoding": {
+            "x": {
+              "field": "Start",
+              "type": "temporal"
+            },
+            "x2": {
+              "field": "EndPlus"
+            }
+          }
+        },
+        {
+          "mark": {
+            "type": "text",
+            "align": "left",
+            "baseline": "top",
+            "dx": 4,
+            "dy": 4,
+            "fontSize": 8.5,
+            "color": "#9A6A1E",
+            "text": "not yet mature"
+          },
+          "encoding": {
+            "x": {
+              "field": "Start",
+              "type": "temporal"
+            },
+            "y": {
+              "value": 0
+            }
+          }
+        }
+      ]
+    },
+    {
+      "transform": [
+        {
+          "fold": [
+            "Concluded",
+            "Positive",
+            "Open"
+          ],
+          "as": [
+            "Series",
+            "Share"
+          ]
+        }
+      ],
+      "mark": {
+        "type": "line",
+        "strokeWidth": 2,
+        "interpolate": "monotone"
+      },
+      "encoding": {
+        "x": {
+          "field": "MidMonth",
+          "type": "temporal",
+          "axis": {
+            "title": null,
+            "format": "%b %y",
+            "tickCount": 10,
+            "labelColor": "#536579",
+            "labelFontSize": 8.5,
+            "grid": false,
+            "domainColor": "#D9E0E8",
+            "tickColor": "#D9E0E8"
+          }
+        },
+        "y": {
+          "field": "Share",
+          "type": "quantitative",
+          "scale": {
+            "domain": [
+              0,
+              1
+            ]
+          },
+          "axis": {
+            "title": null,
+            "format": ".0%",
+            "values": [
+              0,
+              0.25,
+              0.5,
+              0.75,
+              1
+            ],
+            "labelColor": "#536579",
+            "labelFontSize": 8.5,
+            "gridColor": "#E3E8EF",
+            "domain": false,
+            "ticks": false
+          }
+        },
+        "color": {
+          "field": "Series",
+          "type": "nominal",
+          "scale": {
+            "domain": [
+              "Concluded",
+              "Positive",
+              "Open"
+            ],
+            "range": [
+              "#14263D",
+              "#168A86",
+              "#E4A33B"
+            ]
+          },
+          "legend": {
+            "orient": "top",
+            "direction": "horizontal",
+            "title": null,
+            "labelColor": "#14263D",
+            "labelFontSize": 8.5,
+            "symbolType": "stroke",
+            "symbolStrokeWidth": 2.5,
+            "labelExpr": "datum.label === 'Concluded' ? 'Concluded' : datum.label === 'Positive' ? 'Charged or resolved' : 'Still open'"
+          }
+        },
+        "tooltip": [
+          {
+            "field": "MonthDate",
+            "type": "temporal",
+            "title": "Crime month",
+            "format": "%b %Y"
+          },
+          {
+            "field": "Series",
+            "title": "Series"
+          },
+          {
+            "field": "Share",
+            "title": "Share of crimes",
+            "format": ".1%"
+          }
+        ]
+      }
+    }
+  ],
+  "config": {
+    "view": {
+      "stroke": null
+    },
+    "font": "Segoe UI"
+  }
+}

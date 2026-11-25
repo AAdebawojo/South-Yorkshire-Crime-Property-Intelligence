@@ -1,0 +1,253 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "description": "P3 Share of crimes vs share of harm by crime category (excl. ASB). Click a category to filter the other visuals. Field-well names (rename for this visual): Category, Crime Share, Harm Share, Crimes, Weight",
+  "data": {
+    "name": "dataset"
+  },
+  "width": "container",
+  "height": "container",
+  "autosize": {
+    "type": "fit",
+    "contains": "padding"
+  },
+  "transform": [
+    {
+      "filter": "isValid(datum['Crime Share']) && datum['Crimes'] > 0"
+    },
+    {
+      "calculate": "datum['Harm Share'] - datum['Crime Share']",
+      "as": "Gap"
+    },
+    {
+      "calculate": "datum['Gap'] > 0 ? '#D56B63' : '#168A86'",
+      "as": "GapCol"
+    },
+    {
+      "calculate": "(datum['Gap'] > 0 ? '+' : '') + format(datum['Gap'] * 100, '.1f') + ' pts'",
+      "as": "GapTxt"
+    },
+    {
+      "calculate": "max(datum['Crime Share'], datum['Harm Share'])",
+      "as": "RightEnd"
+    }
+  ],
+  "encoding": {
+    "y": {
+      "field": "Category",
+      "type": "nominal",
+      "sort": {
+        "field": "Crime Share",
+        "order": "descending"
+      },
+      "axis": {
+        "title": null,
+        "labelColor": "#14263D",
+        "labelFontSize": 9.5,
+        "labelLimit": 240,
+        "domain": false,
+        "ticks": false,
+        "labelPadding": 8
+      }
+    }
+  },
+  "layer": [
+    {
+      "mark": {
+        "type": "rule",
+        "strokeWidth": 3,
+        "strokeCap": "round",
+        "opacity": 0.55
+      },
+      "encoding": {
+        "x": {
+          "field": "Crime Share",
+          "type": "quantitative",
+          "scale": {
+            "domain": [
+              0,
+              0.7
+            ],
+            "nice": false
+          },
+          "axis": {
+            "title": null,
+            "format": ".0%",
+            "values": [
+              0,
+              0.1,
+              0.2,
+              0.3,
+              0.4,
+              0.5,
+              0.6,
+              0.7
+            ],
+            "labelColor": "#536579",
+            "labelFontSize": 8.5,
+            "gridColor": "#E3E8EF",
+            "domain": false,
+            "ticks": false,
+            "orient": "top"
+          }
+        },
+        "x2": {
+          "field": "Harm Share"
+        },
+        "color": {
+          "field": "GapCol",
+          "type": "nominal",
+          "scale": null,
+          "legend": null
+        },
+        "opacity": {
+          "condition": {
+            "test": {
+              "field": "__selected__",
+              "equal": "off"
+            },
+            "value": 0.15
+          },
+          "value": 0.55
+        }
+      }
+    },
+    {
+      "mark": {
+        "type": "circle",
+        "size": 110,
+        "stroke": "#14263D",
+        "strokeWidth": 0.8,
+        "color": "#A9B4C2",
+        "cursor": "pointer"
+      },
+      "encoding": {
+        "x": {
+          "field": "Crime Share",
+          "type": "quantitative"
+        },
+        "opacity": {
+          "condition": {
+            "test": {
+              "field": "__selected__",
+              "equal": "off"
+            },
+            "value": 0.25
+          },
+          "value": 1
+        },
+        "tooltip": [
+          {
+            "field": "Category",
+            "title": "Category"
+          },
+          {
+            "field": "Crimes",
+            "title": "Crimes (excl. ASB)",
+            "format": ","
+          },
+          {
+            "field": "Crime Share",
+            "title": "Share of crimes",
+            "format": ".1%"
+          },
+          {
+            "field": "Harm Share",
+            "title": "Share of harm",
+            "format": ".1%"
+          },
+          {
+            "field": "Weight",
+            "title": "ONS weight (custody-days per offence)",
+            "format": ",.0f"
+          }
+        ]
+      }
+    },
+    {
+      "mark": {
+        "type": "circle",
+        "size": 110,
+        "stroke": "#14263D",
+        "strokeWidth": 0.8,
+        "color": "#D56B63",
+        "cursor": "pointer"
+      },
+      "encoding": {
+        "x": {
+          "field": "Harm Share",
+          "type": "quantitative"
+        },
+        "opacity": {
+          "condition": {
+            "test": {
+              "field": "__selected__",
+              "equal": "off"
+            },
+            "value": 0.25
+          },
+          "value": 1
+        },
+        "tooltip": [
+          {
+            "field": "Category",
+            "title": "Category"
+          },
+          {
+            "field": "Crimes",
+            "title": "Crimes (excl. ASB)",
+            "format": ","
+          },
+          {
+            "field": "Crime Share",
+            "title": "Share of crimes",
+            "format": ".1%"
+          },
+          {
+            "field": "Harm Share",
+            "title": "Share of harm",
+            "format": ".1%"
+          },
+          {
+            "field": "Weight",
+            "title": "ONS weight (custody-days per offence)",
+            "format": ",.0f"
+          }
+        ]
+      }
+    },
+    {
+      "mark": {
+        "type": "text",
+        "align": "left",
+        "dx": 10,
+        "fontSize": 8.5,
+        "color": "#536579"
+      },
+      "encoding": {
+        "x": {
+          "field": "RightEnd",
+          "type": "quantitative"
+        },
+        "text": {
+          "field": "GapTxt"
+        },
+        "opacity": {
+          "condition": {
+            "test": {
+              "field": "__selected__",
+              "equal": "off"
+            },
+            "value": 0.25
+          },
+          "value": 1
+        }
+      }
+    }
+  ],
+  "config": {
+    "view": {
+      "stroke": null
+    },
+    "font": "Segoe UI"
+  }
+}

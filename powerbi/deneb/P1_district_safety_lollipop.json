@@ -1,0 +1,415 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "description": "P1 District Safety Index vs South Yorkshire average. Fits its container (no scrollbar). Field-well names (rename for this visual): District, NSI, SY NSI, Crime Rate, Severity, Safer Residents, Band Colour",
+  "data": {
+    "name": "dataset"
+  },
+  "height": "container",
+  "width": "container",
+  "params": [
+    {
+      "name": "bandOpacity",
+      "value": 0.1
+    }
+  ],
+  "transform": [
+    {
+      "calculate": "datum['NSI'] - datum['SY NSI']",
+      "as": "Gap"
+    },
+    {
+      "calculate": "format(datum['NSI'], '.1f')",
+      "as": "NSI_txt"
+    },
+    {
+      "calculate": "(datum['Gap'] >= 0 ? '+' : '') + format(datum['Gap'], '.1f') + ' vs SY'",
+      "as": "Gap_txt"
+    }
+  ],
+  "encoding": {
+    "y": {
+      "field": "District",
+      "type": "nominal",
+      "sort": {
+        "field": "NSI",
+        "order": "descending"
+      },
+      "axis": {
+        "title": null,
+        "labelFontSize": 11,
+        "labelColor": "#14263D",
+        "labelFont": "Segoe UI Semibold",
+        "domain": false,
+        "ticks": false,
+        "labelPadding": 8
+      }
+    }
+  },
+  "layer": [
+    {
+      "data": {
+        "values": [
+          {
+            "x0": 30,
+            "x1": 40,
+            "c": "#E08A6F"
+          },
+          {
+            "x0": 40,
+            "x1": 60,
+            "c": "#E4A33B"
+          },
+          {
+            "x0": 60,
+            "x1": 70,
+            "c": "#7DB8A6"
+          }
+        ]
+      },
+      "mark": {
+        "type": "rect",
+        "opacity": {
+          "expr": "bandOpacity"
+        },
+        "clip": true
+      },
+      "encoding": {
+        "x": {
+          "field": "x0",
+          "type": "quantitative",
+          "scale": {
+            "domain": [
+              30,
+              70
+            ],
+            "nice": false,
+            "zero": false
+          }
+        },
+        "x2": {
+          "field": "x1"
+        },
+        "y": {
+          "value": 0
+        },
+        "y2": {
+          "value": {
+            "expr": "height"
+          }
+        },
+        "color": {
+          "field": "c",
+          "type": "nominal",
+          "scale": null,
+          "legend": null
+        }
+      }
+    },
+    {
+      "mark": {
+        "type": "rule",
+        "strokeDash": [
+          4,
+          3
+        ],
+        "color": "#536579",
+        "strokeWidth": 1,
+        "clip": false
+      },
+      "encoding": {
+        "x": {
+          "aggregate": "max",
+          "field": "SY NSI",
+          "type": "quantitative",
+          "scale": {
+            "domain": [
+              30,
+              70
+            ],
+            "nice": false,
+            "zero": false
+          }
+        },
+        "y": {
+          "value": 0
+        },
+        "y2": {
+          "value": {
+            "expr": "height"
+          }
+        }
+      }
+    },
+    {
+      "mark": {
+        "type": "rule",
+        "strokeWidth": 3,
+        "strokeCap": "round",
+        "clip": false
+      },
+      "encoding": {
+        "x": {
+          "field": "SY NSI",
+          "type": "quantitative",
+          "scale": {
+            "domain": [
+              30,
+              70
+            ],
+            "nice": false,
+            "zero": false
+          }
+        },
+        "x2": {
+          "field": "NSI"
+        },
+        "color": {
+          "field": "Band Colour",
+          "type": "nominal",
+          "scale": null,
+          "legend": null
+        },
+        "opacity": {
+          "condition": {
+            "test": {
+              "field": "__selected__",
+              "equal": "off"
+            },
+            "value": 0.25
+          },
+          "value": 1
+        }
+      }
+    },
+    {
+      "mark": {
+        "type": "circle",
+        "size": 260,
+        "stroke": "#14263D",
+        "strokeWidth": 1,
+        "cursor": "pointer",
+        "clip": false
+      },
+      "encoding": {
+        "x": {
+          "field": "NSI",
+          "type": "quantitative",
+          "scale": {
+            "domain": [
+              30,
+              70
+            ],
+            "nice": false,
+            "zero": false
+          },
+          "axis": {
+            "title": "Safety Index, baseline (axis 30\u201370; bands: 40\u201360 Moderate, 60+ High)",
+            "titleColor": "#536579",
+            "titleFontWeight": "normal",
+            "titleFontSize": 9,
+            "values": [
+              30,
+              40,
+              50,
+              60,
+              70
+            ],
+            "grid": false,
+            "domain": false,
+            "labelColor": "#536579"
+          }
+        },
+        "color": {
+          "field": "Band Colour",
+          "type": "nominal",
+          "scale": null,
+          "legend": null
+        },
+        "opacity": {
+          "condition": {
+            "test": {
+              "field": "__selected__",
+              "equal": "off"
+            },
+            "value": 0.25
+          },
+          "value": 1
+        },
+        "tooltip": [
+          {
+            "field": "District",
+            "title": "District"
+          },
+          {
+            "field": "NSI",
+            "title": "Safety Index (baseline)",
+            "format": ".1f"
+          },
+          {
+            "field": "Gap",
+            "title": "vs South Yorkshire",
+            "format": "+.1f"
+          },
+          {
+            "field": "Crime Rate",
+            "title": "Crimes per 1,000 / yr",
+            "format": ".1f"
+          },
+          {
+            "field": "Severity",
+            "title": "Severity score",
+            "format": ".1f"
+          },
+          {
+            "field": "Safer Residents",
+            "title": "Residents in safer LSOAs",
+            "format": ".0%"
+          }
+        ]
+      }
+    },
+    {
+      "mark": {
+        "type": "text",
+        "align": "left",
+        "dx": 14,
+        "fontSize": 11,
+        "font": "Segoe UI Semibold",
+        "color": "#14263D",
+        "clip": false
+      },
+      "encoding": {
+        "x": {
+          "field": "NSI",
+          "type": "quantitative",
+          "scale": {
+            "domain": [
+              30,
+              70
+            ],
+            "nice": false,
+            "zero": false
+          }
+        },
+        "text": {
+          "field": "NSI_txt"
+        }
+      },
+      "transform": [
+        {
+          "filter": "datum['Gap'] >= 0"
+        }
+      ]
+    },
+    {
+      "mark": {
+        "type": "text",
+        "align": "left",
+        "dx": 48,
+        "fontSize": 9,
+        "color": "#536579",
+        "clip": false
+      },
+      "encoding": {
+        "x": {
+          "field": "NSI",
+          "type": "quantitative",
+          "scale": {
+            "domain": [
+              30,
+              70
+            ],
+            "nice": false,
+            "zero": false
+          }
+        },
+        "text": {
+          "field": "Gap_txt"
+        }
+      },
+      "transform": [
+        {
+          "filter": "datum['Gap'] >= 0"
+        }
+      ]
+    },
+    {
+      "mark": {
+        "type": "text",
+        "align": "right",
+        "dx": -14,
+        "fontSize": 11,
+        "font": "Segoe UI Semibold",
+        "color": "#14263D",
+        "clip": false
+      },
+      "encoding": {
+        "x": {
+          "field": "NSI",
+          "type": "quantitative",
+          "scale": {
+            "domain": [
+              30,
+              70
+            ],
+            "nice": false,
+            "zero": false
+          }
+        },
+        "text": {
+          "field": "NSI_txt"
+        }
+      },
+      "transform": [
+        {
+          "filter": "datum['Gap'] < 0"
+        }
+      ]
+    },
+    {
+      "mark": {
+        "type": "text",
+        "align": "right",
+        "dx": -46,
+        "fontSize": 9,
+        "color": "#536579",
+        "clip": false
+      },
+      "encoding": {
+        "x": {
+          "field": "NSI",
+          "type": "quantitative",
+          "scale": {
+            "domain": [
+              30,
+              70
+            ],
+            "nice": false,
+            "zero": false
+          }
+        },
+        "text": {
+          "field": "Gap_txt"
+        }
+      },
+      "transform": [
+        {
+          "filter": "datum['Gap'] < 0"
+        }
+      ]
+    }
+  ],
+  "config": {
+    "view": {
+      "stroke": null
+    },
+    "font": "Segoe UI",
+    "axis": {
+      "labelFont": "Segoe UI"
+    }
+  },
+  "autosize": {
+    "type": "fit",
+    "contains": "padding"
+  }
+}
