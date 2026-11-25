@@ -4,18 +4,6 @@
 
 ---
 
-*Publishing notes (delete before posting)*
-
-- **Suggested title:** Is It Safe, and Can We Afford It? Turning Half a Million Police Records into a Neighbourhood Decision Tool
-- **Subtitle:** How I combined crime, deprivation, census and house-price data for South Yorkshire's 860 neighbourhoods into a Power BI intelligence product
-- **Alternative titles:** "Beyond the Crime Map: Building a Family Suitability Index for South Yorkshire" · "From police.uk to Postcode Decisions: An End-to-End Analytics Build"
-- **Tags (5):** Data Analytics · Power BI · Data Engineering · Geospatial · PostgreSQL
-- **Cover image concept:** the Family Finder page cropped to the LSOA map and the "Safety vs house price" scatter, side by side on a dark navy background, with the line "Safety · Price · Family fit" in white. If you prefer something less dashboard-like, a clean duotone (navy and teal) of the South Yorkshire LSOA boundaries, with Sheffield, Rotherham, Barnsley and Doncaster labelled.
-- **Replace** `[GitHub repository link]` with your repo URL before publishing.
-- **Image placements** are marked `[IMAGE n]` with captions; the files are in the repo folder `images/dashboard/`.
-
----
-
 When I started looking at where to live in South Yorkshire, I did what most people do. I opened a property portal, filtered by price, and then searched crime maps for each area that looked promising.
 
 It didn't work. The crime map showed dots, not context. A street near a town centre looked alarming, but was that because people live dangerously there or because thousands of shoppers pass through it each day? A cheaper area looked similar to a more expensive one, but was it really, or did the difference in price reflect something the map couldn't show? And none of it told me anything about schools, green space or whether other families lived nearby.
@@ -84,7 +72,7 @@ Every step was validated before the next one started. Row counts reconcile from 
 
 A note on process: I worked with an AI assistant (Claude) throughout, using it to draft SQL, DAX and chart specifications and to keep the documentation in step. The decisions about scope, method and trade-offs were mine, and every number in this article was run, checked and reconciled in my own database and report. I found it most valuable not for writing code, but for challenging assumptions and keeping a disciplined validation log.
 
-Code and documentation: `[GitHub repository link]`.
+Code and documentation: `https://github.com/AAdebawojo/South-Yorkshire-Crime-Property-Intelligence`.
 
 ## The method: two indices, built to be argued with
 
@@ -225,20 +213,3 @@ The broader point is simple. Public data is abundant; intelligence is not. The v
 
 ---
 
-## LinkedIn post (ready to paste)
-
-Is it safe, and can we afford it?
-
-That was the question when I started looking at where to live in South Yorkshire, and no single website could answer it. So I built something that could.
-
-I combined 527,597 police.uk records with ONS population, the 2025 deprivation indices, Census 2021 and 47,943 Land Registry sales across South Yorkshire's 860 neighbourhoods: Python loaders, a layered PostgreSQL model, and a Power BI report with two composite indices.
-
-A few things the data showed:
-🔹 Violence and sexual offences are 40% of crimes but 61% of harm.
-🔹 Town centres can look eight times more dangerous than average, because visitors aren't counted as residents.
-🔹 111 neighbourhoods are much safer than their house prices predict, and still under £250k.
-🔹 The safest neighbourhoods are often the least certain, because so little happens there.
-
-The full write-up covers the engineering, the method and the limitations: [link]
-
-#DataAnalytics #PowerBI #DataEngineering #PostgreSQL #Geospatial
